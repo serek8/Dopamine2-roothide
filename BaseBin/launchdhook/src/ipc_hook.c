@@ -2,8 +2,12 @@
 #include <substrate.h>
 #include <libproc.h>
 #include <libjailbreak/libjailbreak.h>
+#include <libjailbreak/log.h>
 #include <libjailbreak/deny.h>
 
+typedef struct{
+    unsigned int val[8];
+} my_audit_token_t;
 
 int (*sandbox_check_by_audit_token_orig)(audit_token_t au, const char *operation, int sandbox_filter_type, ...);
 int sandbox_check_by_audit_token_hook(audit_token_t au, const char *operation, int sandbox_filter_type, ...)
@@ -21,6 +25,17 @@ int sandbox_check_by_audit_token_hook(audit_token_t au, const char *operation, i
 	const void *arg9 = va_arg(a, void *);
 	const void *arg10 = va_arg(a, void *);
 	va_end(a);
+	JBLogDebug("inside sandbox_check_by_audit_token_hook");
+	// NSLog(@"inside sandbox_check_by_audit_token_hook");
+	if(operation) JBLogDebug("operation = %s", operation);
+	// if(operation) NSLog(@"operation = %s", operation);
+	if(name) JBLogDebug("name = %s", name);
+	// if(name) NSLog(@"name = %{public}s", name);
+	my_audit_token_t *mytoken = (uint8_t*)&au;
+	for (int i = 0; i < 8; i++) {
+		JBLogDebug("AuditToken[%d]: %02X", i, mytoken->val[i]);
+	}
+  	JBLogDebug("AuditToken[PID]: %d", mytoken->val[5]);
 	if (name && operation) {
 		if (strcmp(operation, "mach-lookup") == 0) {
 			if (strncmp((char *)name, "cy:", 3) == 0 || strncmp((char *)name, "lh:", 3) == 0) {
@@ -28,6 +43,7 @@ int sandbox_check_by_audit_token_hook(audit_token_t au, const char *operation, i
 				bool allow=true;
 				char pathbuf[PATH_MAX]={0};
 				pid_t pid = audit_token_to_pid(au);
+				JBLogDebug("audit_token_to_pid = %d", pid);
 				if(pid>0 && proc_pidpath(pid, pathbuf, sizeof(pathbuf))>0) {
 					if(isBlacklisted(pathbuf)) {
 						allow=false;
