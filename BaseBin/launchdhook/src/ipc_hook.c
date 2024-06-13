@@ -26,17 +26,15 @@ int sandbox_check_by_audit_token_hook(audit_token_t au, const char *operation, i
 	const void *arg10 = va_arg(a, void *);
 	va_end(a);
 	JBLogDebug("inside sandbox_check_by_audit_token_hook");
-	// NSLog(@"inside sandbox_check_by_audit_token_hook");
-	if(operation) JBLogDebug("operation = %s", operation);
-	// if(operation) NSLog(@"operation = %s", operation);
-	if(name) JBLogDebug("name = %s", name);
-	// if(name) NSLog(@"name = %{public}s", name);
-	my_audit_token_t *mytoken = (uint8_t*)&au;
-	for (int i = 0; i < 8; i++) {
-		JBLogDebug("AuditToken[%d]: %02X", i, mytoken->val[i]);
-	}
-  	JBLogDebug("AuditToken[PID]: %d", mytoken->val[5]);
 	if (name && operation) {
+		JBLogDebug("inside if sandbox_check_by_audit_token_hook");
+		JBLogDebug("operation = %s", operation);
+		JBLogDebug("name = %s", name);
+		my_audit_token_t *mytoken = (uint8_t*)&au;
+		for (int i = 0; i < 8; i++) {
+			JBLogDebug("AuditToken[%d]: %02X", i, mytoken->val[i]);
+		}
+		JBLogDebug("AuditToken[PID]: %d", mytoken->val[5]);
 		if (strcmp(operation, "mach-lookup") == 0) {
 			if (strncmp((char *)name, "cy:", 3) == 0 || strncmp((char *)name, "lh:", 3) == 0) {
 								
