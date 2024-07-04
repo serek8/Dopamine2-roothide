@@ -9,7 +9,6 @@ int jbserver_received_xpc_message(struct jbserver_impl *server, xpc_object_t xms
 
 	if (!xpc_dictionary_get_value(xmsg, "jb-domain")) return -1;
 	if (!xpc_dictionary_get_value(xmsg, "action")) return -1;
-	JBLogDebug("jbserver_received_xpc_message");
 	uint64_t domainIdx = xpc_dictionary_get_uint64(xmsg, "jb-domain");
 	if (domainIdx == 0) return -1;
 	struct jbserver_domain *domain = server->domains[0];
