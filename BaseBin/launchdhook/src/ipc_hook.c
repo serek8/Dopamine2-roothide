@@ -43,9 +43,15 @@ int sandbox_check_by_audit_token_hook(audit_token_t au, const char *operation, i
 				pid_t pid = audit_token_to_pid(au);
 				JBLogDebug("audit_token_to_pid = %d", pid);
 				if(pid>0 && proc_pidpath(pid, pathbuf, sizeof(pathbuf))>0) {
+					JBLogDebug("proc_pidpath(%d) = %s", pid, pathbuf);
 					if(isBlacklisted(pathbuf)) {
+						JBLogDebug("Blacklisted");
 						allow=false;
+					}
+					else{
+						JBLogDebug("Not blacklisted");
 					} 
+					
 				}
 				
 				if(allow) {

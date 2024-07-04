@@ -73,7 +73,7 @@ void JBDLogV(const char *prefix, const char *format, va_list va) {
     }
 }
 
-bool jblogenable = false;
+bool jblogenable = true;
 
 void JBLogDebug(const char *format, ...) {
     static dispatch_once_t onceToken;
