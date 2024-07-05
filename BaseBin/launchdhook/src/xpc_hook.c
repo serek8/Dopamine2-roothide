@@ -31,7 +31,7 @@ int xpc_receive_mach_msg_hook(void *a1, void *a2, void *a3, void *a4, xpc_object
 	JBLogDebug("xpc_receive_mach_msg_hook = %d", r);
 	if (r == 0) {
 		xpc_object_t xmsg = *xOut;
-		char *description = ixpc_copy_description(xmsg);
+		char *description = xpc_copy_description(xmsg);
 		JBLogDebug("xpc_receive_mach_msg_hook description = %s", description);
 		if (xpc_dictionary_get_value(xmsg, "action")){
 			JBLogDebug("xpc_receive_mach_msg_hook action");
