@@ -5,6 +5,7 @@
 #include <libproc.h>
 #include <sandbox.h>
 #include <substrate.h>
+#include <libjailbreak/log.h>
 #include <libjailbreak/jbserver.h>
 
 /*#undef JBLogDebug
@@ -29,6 +30,12 @@ int xpc_receive_mach_msg_hook(void *a1, void *a2, void *a3, void *a4, xpc_object
 	int r = xpc_receive_mach_msg_orig(a1, a2, a3, a4, xOut);
 	JBLogDebug("xpc_receive_mach_msg_hook = %d", r);
 	if (r == 0) {
+		xpc_object_t xmsg = *xOut;
+		char *description = ixpc_copy_description(xmsg);
+		JBLogDebug("xpc_receive_mach_msg_hook description = %s", description);
+		if (xpc_dictionary_get_value(xmsg, "action")){
+			JBLogDebug("xpc_receive_mach_msg_hook action");
+		}
 		int jb_ret = jbserver_received_xpc_message(&gGlobalServer, *xOut);
 		JBLogDebug("jb_ret() = %d", jb_ret);
 		if (jb_ret == 0) {
