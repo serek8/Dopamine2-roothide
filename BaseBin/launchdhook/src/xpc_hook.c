@@ -36,6 +36,7 @@ int xpc_receive_mach_msg_hook(void *a1, void *a2, void *a3, void *a4, xpc_object
 		if (xpc_dictionary_get_value(xmsg, "action")){
 			JBLogDebug("xpc_receive_mach_msg_hook action");
 		}
+		free(description);
 		int jb_ret = jbserver_received_xpc_message(&gGlobalServer, *xOut);
 		JBLogDebug("jb_ret() = %d", jb_ret);
 		if (jb_ret == 0) {
