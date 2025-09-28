@@ -25,7 +25,7 @@ int (*sysctlbyname_orig)(const char *name, void *oldp, size_t *oldlenp, void *ne
 int sysctlbyname_hook(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen)
 {
 	if (name && strstr(name, "developer")) {
-		// NSLog(@"sysctlbyname_hook=%{public}s", name);
+		NSLog(@"sysctlbyname_hook=%{public}s", name);
 	}
 	return sysctlbyname_orig(name, oldp, oldlenp, newp, newlen);
 }
