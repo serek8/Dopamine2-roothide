@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <mach-o/dyld.h>
 #include "common.h"
+#include <sys/sysctl.h>
+#import <substrate.h>
 
 #ifndef DEBUG
 #define NSLog(args...)	
@@ -17,6 +19,20 @@ NSString* safe_getExecutablePath()
 NSString* getProcessName()
 {
 	return safe_getExecutablePath().lastPathComponent;
+}
+
+int (*sysctlbyname_orig)(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
+int sysctlbyname_hook(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen)
+{
+	if (name && strstr(name, "developer")) {
+		// NSLog(@"sysctlbyname_hook=%{public}s", name);
+	}
+	return sysctlbyname_orig(name, oldp, oldlenp, newp, newlen);
+}
+// int __sysctlbyname(const char *name, size_t namelen, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
+void my_hook_sysctl_init(){
+		void* __sysctlbyname_orig = NULL;
+		MSHookFunction(&sysctlbyname, (void *) sysctlbyname_hook, (void **)&sysctlbyname_orig);
 }
 
 %ctor
